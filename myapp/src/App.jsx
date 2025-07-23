@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Street from './components/Street';
+import StreetForm from './components/StreetForm';
 import './App.css';
 
 function App() {
@@ -13,9 +14,12 @@ function App() {
     { id: 6, title: "Nice" },
   ]);
 
-  const [newStreet, setNewStreet] = useState("");
+  const handleAddStreet = (newStreet) => {
+    const newStreets = [...streets];
+    newStreets.push(newStreet);
+    setStreets(newStreets);
+  }
 
-  // comportements
   const hendleDeleteStreet = (id) => {
     //1. copie du state
     const newStreets = [...streets];
@@ -27,38 +31,16 @@ function App() {
     setStreets(streetsUpdated);
   }
 
-  const handleAddStreet = (event) => {
-    event.preventDefault();
-    if(newStreet === null || newStreet.trim() === "") return;
-    //1. copie du state
-    const newStreets = [...streets];
-
-    //2. manipuler le state
-    const newStreetUpdated = {id: new Date().getTime(), title: newStreet};
-    newStreets.push(newStreetUpdated);
-
-    //3. modifier le state
-    setStreets(newStreets);
-    setNewStreet("");
-  }
-
-  const handleChange = (event) => {
-    setNewStreet(event.target.value);
-  }
-
-
   // affichage (UI, rendu)
   return (
     <>
       <h1>Exercice : Gestion du formulaire</h1>
-      <form action="submit" onSubmit={handleAddStreet}>
-        <input value={newStreet} onChange={handleChange} type='text' placeholder='ajouter une ville' id='streetTitle'></input>
-        <button>Ajouter</button>
-      </form>
+
+      <StreetForm handleAddStreet={handleAddStreet}/>
 
       <ol>
         {streets.map((street) => {
-          return <Street streetInfo={street} onStreetDelete={hendleDeleteStreet}/>
+          return <Street key={street.id} streetInfo={street} onStreetDelete={hendleDeleteStreet} />
         })}
       </ol>
     </>
